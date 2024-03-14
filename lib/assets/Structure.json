@@ -1,0 +1,130 @@
+{
+  "apps": [
+    {
+      "appName": "Selfcare",
+      "screens": [
+        {
+          "screenName": "Add New Member",
+          "forms": [
+            {
+              "formName": "Add New Member",
+              "fields": [
+                {
+                  "fieldName": "Selfcare First Name",
+                  "dbMapper": "fName",
+                  "type": "text",
+                  "placeholder": "Enter your first name",
+                  "sequence": 1
+                },
+                {
+                  "fieldName": "Last Name",
+                  "dbMapper": "lName",
+                  "type": "text",
+                  "placeholder": "Enter your last name",
+                  "sequence": 2
+                },
+                {
+                  "fieldName": "Gender",
+                  "dbMapper": "gender",
+                  "type": "dropdown",
+                  "options": ["Male", "Female", "Other"],
+                  "placeholder": "Select your gender",
+                  "sequence": 3
+                }
+              
+              ]
+            }
+          ]
+        }
+      ],
+      "database": [
+          {
+            "tableName": "products",
+            "columns": [
+              {"columnName": "id", "dataType": "INTEGER PRIMARY KEY AUTOINCREMENT"},
+              {"columnName": "name", "dataType": "TEXT NOT NULL"},
+              {"columnName": "price", "dataType": "REAL NOT NULL"}
+            ]
+          },
+          {
+            "tableName": "users",
+            "columns": [
+              {"columnName": "id", "dataType": "INTEGER PRIMARY KEY AUTOINCREMENT"},
+              {"columnName": "name", "dataType": "TEXT NOT NULL"},
+              {"columnName": "email", "dataType": "TEXT NOT NULL UNIQUE"}
+            ]
+          }
+      ],
+      "actions":[
+        {
+          "actionName": "save",
+          "actionTable": [
+            {
+              "tableName": "user",
+              "dbMapper": {
+                "name": "fName",
+                "email": "lName"
+              }
+            }
+          ]
+        },
+        {
+          "actionName": "get",
+          "APIMapper":{
+            "apiKey":{
+               "column":"fName"
+            },
+            "relationship":{
+               "table":"",
+               "columnName":"",
+               "linkMethod":"JOIN",
+               "linkType": "INNER"
+            }
+         }
+         
+        }
+      ]
+    },
+    {
+      "appName": "Farmer",
+      "screens": [
+        {
+          "screenName": "Add New Farmer",
+          "forms": [
+            {
+              "formName": "Add New Farmer",
+              "fields": [
+                  {
+                    "fieldName": "Farmer First Name",
+                    "type": "text",
+                    "placeholder": "Enter your first name",
+                    "sequence": 1
+                  },
+                  {
+                    "fieldName": "Last Name",
+                    "type": "text",
+                    "placeholder": "Enter your last name",
+                    "sequence": 2
+                  },
+                  {
+                    "fieldName": "Gender",
+                    "type": "dropdown",
+                    "options": ["Male", "Female", "Other"],
+                    "placeholder": "Select your gender",
+                    "sequence": 3
+                  },
+                  {
+                    "fieldName": "Crop",
+                    "type": "dropdown",
+                    "options": ["Carrot", "Cabbage", "Broccoli"],
+                    "placeholder": "Select the Crop",
+                    "sequence": 3
+                  }
+                ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
