@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:entutiondemoapp/FormBuilderScreen.dart';
 import 'package:entutiondemoapp/Schemas/TableSchema.dart';
-import 'package:entutiondemoapp/sqliteHelper.dart';
-// import 'package:entutiondemoapp/Farmer/HomeScreen.dart' as FarmerHomeScreen;
+import 'package:entutiondemoapp/form_screen.dart';
+import 'package:entutiondemoapp/DatabaseHelper.dart';
+import 'package:entutiondemoapp/Selfcare/SelfcareHomeScreen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -148,13 +149,13 @@ class HomeScreen extends StatelessWidget {
     // selcareDbHelper.createProductTable(selcareDbHelper);
     // selcareDbHelper.insertProduct(selcareDbHelper, 'Playstation', 1000000.99);
 
-    var dbHelper = SQFliteDBHelper(database);
-    List<TableSchema> schemas = await fetchTableSchemas();
+    // var dbHelper = SQFliteDBHelper(database);
+    // List<TableSchema> schemas = await fetchTableSchemas();
 
-    for (var schema in schemas) {
-      // print(schema.columns);
-      await dbHelper.createTableFromSchema(schema);
-    }
+    // for (var schema in schemas) {
+    //   // print(schema.columns);
+    //   await dbHelper.createTableFromSchema(schema);
+    // }
   }
 
   @override
@@ -175,11 +176,7 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 createCustomTables('selfcare.db');
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const FormBuilderScreen(
-                    appName: 'Selfcare',
-                    screenName: 'Add New Member',
-                    appId: 1,
-                  ),
+                  builder: (context) => SelfcareHomeScreen(),
                 ));
               },
               child: const Center(
@@ -190,13 +187,13 @@ class HomeScreen extends StatelessWidget {
           Card(
             child: InkWell(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const FormBuilderScreen(
-                    appName: 'Farmer',
-                    screenName: 'Add New Farmer',
-                    appId: 2,
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        FormScreen(appId: "farmer", formId: "addNewFarmerForm"),
                   ),
-                ));
+                );
               },
               child: const Center(
                 child: Text('Farmer'),
