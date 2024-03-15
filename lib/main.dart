@@ -1,6 +1,6 @@
 import 'package:entutiondemoapp/FormBuilderScreen.dart';
 import 'package:entutiondemoapp/HomeScreen.dart';
-import 'package:entutiondemoapp/sqliteHelper.dart';
+import 'package:entutiondemoapp/DatabaseHelper.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_form_builder/flutter_form_builder.dart';
 
@@ -10,13 +10,10 @@ Future<void> main() async {
 
   // var globalDbHelper = SQFliteDBHelper();
 
-  var selcareDbHelper = SQFliteDBHelper('selfcare.db');
-  await selcareDbHelper.database; // Ensures the database is created and opened.
-
-  // Initialize database for "App2"
-  var farmerDbHelper = SQFliteDBHelper('farmer.db');
-
-  await farmerDbHelper.database; // Ensures the database is created and opened.
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Ensure plugin services are initialized
+  await DatabaseHelper
+      .instance.database; // Ensures the database is created and opened.
   // farmerDbHelper.createProductTable(farmerDbHelper);
   // farmerDbHelper.insertProduct(farmerDbHelper, 'Personal Computer', 999.99);
 
