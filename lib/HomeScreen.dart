@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:entutiondemoapp/Farmer/FarmerHomeScreen.dart';
 import 'package:entutiondemoapp/FormBuilderScreen.dart';
 import 'package:entutiondemoapp/Schemas/TableSchema.dart';
 import 'package:entutiondemoapp/form_screen.dart';
@@ -191,7 +192,8 @@ class HomeScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        FormScreen(appId: "farmer", formId: "addNewFarmerForm"),
+                        // FormScreen(appId: "farmer", formId: "addNewFarmerForm")
+                        FarmerHomeScreen(appName: "farmer", screenName: "test"),
                   ),
                 );
               },

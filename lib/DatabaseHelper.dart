@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -103,5 +105,20 @@ class DatabaseHelper {
   Future<int> delete(String table, int id) async {
     final db = await database;
     return await db.delete(table, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<List<String>> fetchDropdownOptions(
+      String query, String queryValue) async {
+    final db = await database;
+    try {
+      final List<Map<String, dynamic>> results = await db.rawQuery(query);
+      print(results);
+      List<String> options =
+          results.map((row) => row[queryValue].toString()).toList();
+      return options;
+    } catch (e) {
+      print('Error fetching options from database: $e');
+      return [];
+    } finally {}
   }
 }

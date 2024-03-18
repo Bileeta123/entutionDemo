@@ -1,0 +1,53 @@
+{
+  "apps": [
+    {
+      "appId": "farmer",
+      "appName": "Farmer",
+      "screens": [
+        {
+          "screenId": "addNewMember",
+          "screenName": "Add New Plot",
+          "forms": [
+            {
+              "formId": "addNewPlot",
+              "formName": "Add New Plot",
+              "fields": [
+                {
+                  "fieldName": "Plot Name",
+                  "dbMapper": "plotName",
+                  "type": "text",
+                  "placeholder": "Plot Name",
+                  "isRequired": true,
+                  "sequence": 1
+                },
+                {
+                  "fieldName": "Plot Code",
+                  "dbMapper": "plotCode",
+                  "type": "text",
+                  "placeholder": "Plot Code",
+                  "isRequired": true,
+                  "sequence": 2
+                },
+                {
+                  "fieldName": "UOM Group",
+                  "dbMapper": "uomGroup",
+                  "type": "dropdown",
+                  "options": [],
+                  "placeholder": "Select UOM Group",
+                  "dbQuery": {
+                    "query": "SELECT * FROM UOMGroup",
+                    "onChangeFunc": "getUOMCapacity"
+                  },
+                  "sequence": 3
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    
+
+    }
+    
+  ]
+}
