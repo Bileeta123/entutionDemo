@@ -61,6 +61,7 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
                   "type": "dropdown",
                   "fieldId": "300",
                   "options": [],
+                  "selectedValue": null,
                   "placeholder": "Select UOM Group",
                   "dbQuery": {
                     "query": "SELECT * FROM UOMGroup",
@@ -78,6 +79,7 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
                   "fieldName": "Capacity Group",
                   "dbMapper": "capacityGroup",
                   "type": "dropdown",
+                  "selectedValue": null,
                   "options": [],
                   "fieldId": "400",
                   "dbQuery": {
@@ -154,7 +156,7 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
               }).toList();
               print('dependent filed list: $dependentField');
               // Optionally, reset the selected value for the dependent dropdowns
-              //dependentField['selectedValue'] = null;
+              dependentField['selectedValue'] = null;
             });
           }
         } catch (e) {
@@ -185,10 +187,10 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
               field['selectedValue'] = value;
             });
             // Call _updateDependableDropdowns if this is the UOM Group dropdown
-            if (field['fieldId'] == "300") {
-              // Assuming '300' is the fieldId for UOM Group
-              _updateDependableDropdowns(field['fieldId'], value);
-            }
+            //if (field['fieldId'] == "300") {
+            // Assuming '300' is the fieldId for UOM Group
+            _updateDependableDropdowns(field['fieldId'], value);
+            //}
           },
           decoration: InputDecoration(
             labelText: field['placeholder'],
