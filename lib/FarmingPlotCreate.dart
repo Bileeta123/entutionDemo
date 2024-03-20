@@ -1,10 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:entutiondemoapp/DynamicFuntionHandler.dart';
 import 'package:flutter/material.dart';
 import 'DatabaseHelper.dart';
-import 'DynamicFuntionHandler.dart';
+// import 'DynamicFuntionHandler.dart';
 
 class AddFarmingPlotScreen extends StatefulWidget {
-  const AddFarmingPlotScreen({Key? key}) : super(key: key);
+  const AddFarmingPlotScreen({super.key});
 
   @override
   State<AddFarmingPlotScreen> createState() => _AddFarmingPlotScreenState();
@@ -31,6 +33,7 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
             "fields": [
               {
                 "fieldName": "Plot Name",
+                "fieldId": "100",
                 "dbMapper": "plotName",
                 "type": "text",
                 "placeholder": "Plot Name",
@@ -40,6 +43,7 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
               {
                 "fieldName": "Plot Code",
                 "dbMapper": "plotCode",
+                "fieldId": "200",
                 "type": "text",
                 "placeholder": "Plot Code",
                 "isRequired": true,
@@ -49,6 +53,7 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
                 "fieldName": "UOM Group",
                 "dbMapper": "uomGroup",
                 "type": "dropdown",
+                "fieldId": "300",
                 "options": [],
                 "placeholder": "Select UOM Group",
                 "dbQuery": {
@@ -68,8 +73,12 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
                 "dbMapper": "capacityGroup",
                 "type": "dropdown",
                 "options": [],
+                "fieldId": "400",
+                "dbQuery": {
+                  "query": '',
+                },
+                "dependable": {"parentId": "300"},
                 "placeholder": "Select Capacity Group",
-                "dbQuery": {},
                 "sequence": 4
               }
             ]
@@ -90,7 +99,9 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
   // Function to fetch dropdown options for each dropdown field
   void fetchDropdownOptions() async {
     for (int i = 0; i < fields.length; i++) {
-      if (fields[i]['type'] == 'dropdown' && fields[i]['dbQuery'] != null) {
+      if (fields[i]['type'] == 'dropdown' &&
+          fields[i]['dbQuery'] != '' &&
+          fields[i]['dbQuery']['query'] != '') {
         String query = fields[i]['dbQuery']['query'];
         String queryValue = fields[i]['dbQuery']['queryValue'];
         try {
@@ -100,9 +111,55 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
             fields[i]['options'] = options;
           });
         } catch (error) {
-          // ignore: avoid_print
           print('Error fetching dropdown options: $error');
         }
+      }
+    }
+  }
+
+  // void updateDependentDropdowns(
+  //     String parentId, String? selectedValue, rows) async {
+  //   var dependentFields = fields
+  //       .where((field) => field['dependable']?['parentId'] == parentId)
+  //       .toList();
+  //   for (var field in dependentFields) {
+  //     List<String> newOptions = rows;
+  //     setState(() {
+  //       field['options'] = field['options'] =
+  //           newOptions.map((option) => option.toString()).toList();
+  //     });
+  //     print('sfdf - $dependentFields');
+  //   }
+  // }
+
+  void updateDependentDropdowns(String parentId, String? selectedValue) async {
+    // Find the dependent fields.
+    var dependentFields = fields
+        .where((field) => field['dependable']?['parentId'] == parentId)
+        .toList();
+
+    // Iterate through all dependent fields to update their options.
+    for (var field in dependentFields) {
+      if (field['dbQuery'] != '' && field['dbQuery']['onChangeFunc'] != '') {
+        String functionName = field['dbQuery']['onChangeFunc']['functionName'];
+        String functionQuery =
+            field['dbQuery']['onChangeFunc']['functionQuery'] + selectedValue!;
+        print('khhihihih- $functionQuery');
+        try {
+          List<String> newOptions = await handler.callFunctionByName(
+              functionName, functionQuery, field['dbQuery']['queryValue']);
+
+          setState(() {
+            field['options'] =
+                newOptions.map((option) => option.toString()).toList();
+          });
+
+          print('ss - $dependentFields');
+        } catch (e) {
+          print('Error updating dependent dropdowns: $e');
+        }
+      } else {
+        // print('innn');
       }
     }
   }
@@ -111,7 +168,7 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dynamic Form'),
+        title: const Text('Dynamic Form'),
       ),
       body: ListView(
         children: [
@@ -151,10 +208,10 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
                   value; // Append selected value to query if needed
               String functionQueryValue =
                   field['dbQuery']['onChangeFunc']['queryValue'];
-              handler
-                  .callFunctionByName(
-                      functionName, functionQuery, functionQueryValue)
-                  .then((value) => print(value));
+              Future<void> rows = handler.callFunctionByName(
+                  functionName, functionQuery, functionQueryValue);
+              // print('dddd - $rows');
+              updateDependentDropdowns(field['fieldId'], value);
             }
           },
           decoration: InputDecoration(
