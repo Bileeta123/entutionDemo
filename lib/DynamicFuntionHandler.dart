@@ -1,37 +1,26 @@
-// ignore_for_file: avoid_print
-
 import 'package:entutiondemoapp/DatabaseHelper.dart';
 
 class DynamicFunctionHandler {
-  final Map<String, Function> functionMap = {};
+  // Maps function names to their implementations
+  final Map<String, Future<List<Map<String, dynamic>>> Function(String)>
+      functionMap = {};
 
   DynamicFunctionHandler() {
-    // Now in the constructor body, we can access instance members
     functionMap['getUOMGroupDetails'] = getUOMGroupDetails;
-    // Add more functions as needed
   }
 
-  Future<List<String>> getUOMGroupDetails(
-      String functionName, String functionQuery, String queryValue) async {
-    print("getUOMGroupDetails function called");
-    List<String> options = await DatabaseHelper.instance
-        .fetchDropdownOptions(functionQuery, queryValue);
-    print(options);
-    return options;
+  Future<List<Map<String, dynamic>>> getUOMGroupDetails(String query) async {
+    print("Function getUOMGroupDetails called with query: $query");
+    return await DatabaseHelper.instance.fetchDropdownOptions(query);
   }
 
-  Future<List<String>> callFunctionByName(
-      String functionName, String functionQuery, String queryValue) {
-    if (functionMap.containsKey(functionName)) {
-      var functionToCall = functionMap[functionName];
-      if (functionToCall != null) {
-        var temp = functionToCall(functionName, functionQuery, queryValue);
-        return temp;
-      }
-      return Future.error("Function $functionName found, but it's null.");
+  Future<List<Map<String, dynamic>>> callFunctionByName(
+      String functionName, String query) async {
+    if (functionName == 'getUOMGroupDetails') {
+      return getUOMGroupDetails(query);
     } else {
       print("Function $functionName not found.");
-      return Future.error("Function $functionName found, but it's null111.");
+      return [];
     }
   }
 }
