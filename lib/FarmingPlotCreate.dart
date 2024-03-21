@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:math';
 
 import 'package:entutiondemoapp/DynamicFuntionHandler.dart';
@@ -44,6 +46,8 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
                   "type": "text",
                   "placeholder": "Plot Name",
                   "isRequired": true,
+                  "selectedValue": null,
+                  "controller": null,
                   "sequence": 1
                 },
                 {
@@ -53,6 +57,8 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
                   "type": "text",
                   "placeholder": "Plot Code",
                   "isRequired": true,
+                  "selectedValue": null,
+                  "controller": null,
                   "sequence": 2
                 },
                 {
@@ -97,9 +103,19 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
     };
     setState(() {
       _fields = _formConfig['screens'][0]['forms'][0]['fields'];
+
+      _fields.forEach((field) {
+        if (field['type'] == 'text') {
+          field['controller'] =
+              TextEditingController(text: field['selectedValue']);
+        }
+      });
     });
     _fetchInitialDropdownOptions();
   }
+
+  var _isInit = true;
+  final Map<String, dynamic> _formData = {};
 
   Future<void> _fetchInitialDropdownOptions() async {
     for (var field in _fields.where((field) =>
@@ -166,11 +182,32 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
     }
   }
 
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      Map<String, dynamic> formData = {};
+
+      for (var field in _fields) {
+        var fieldId = field['dbMapper']; // Use dbMapper as the key
+        var fieldValue = field['type'] == 'text'
+            ? field['controller'].text
+            : field['selectedValue'];
+
+        formData[fieldId] = fieldValue;
+      }
+      print('Form Data: $formData');
+    }
+  }
+
   Widget _buildFormField(Map<String, dynamic> field) {
     switch (field['type']) {
       case 'text':
         return TextFormField(
           decoration: InputDecoration(labelText: field['placeholder']),
+          controller: field['controller'],
+          onChanged: (value) {
+            // Update the selectedValue on change
+            field['selectedValue'] = value;
+          },
         );
       case 'dropdown':
         return DropdownButtonFormField<dynamic>(
@@ -213,7 +250,11 @@ class _AddFarmingPlotScreenState extends State<AddFarmingPlotScreen> {
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: _fields.map((field) => _buildFormField(field)).toList(),
+              children: _fields.map((field) => _buildFormField(field)).toList()
+                ..add(ElevatedButton(
+                  onPressed: _submitForm,
+                  child: const Text('Submit'),
+                )),
             ),
           ),
         ],
